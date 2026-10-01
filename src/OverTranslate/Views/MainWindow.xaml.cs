@@ -1715,12 +1715,15 @@ public partial class MainWindow : Window
 
     private static void OpenSettings() => ShellWindow.ShowOrActivate(ShellPage.Settings);
 
+    private static void OpenVoice() => ShellWindow.ShowOrActivate(ShellPage.Voice);
+
     private void ShowTrayMenu()
     {
         if (_trayMenu != null) return;
         _trayMenu = new TrayMenuWindow();
         _trayMenu.OpenTranslationRequested += (_, _) => OnTrayLeftClick();
         _trayMenu.SetRealtimeRunning(Views.Realtime.RealtimeSessionController.Instance.IsActive);
+        _trayMenu.OpenVoiceRequested       += (_, _) => OpenVoice();
         _trayMenu.OpenSettingsRequested    += (_, _) => OpenSettings();
         _trayMenu.ExitRequested            += (_, _) => ExitApp();
         _trayMenu.Closed                   += (_, _) => _trayMenu = null;

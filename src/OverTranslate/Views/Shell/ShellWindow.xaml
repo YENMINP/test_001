@@ -403,6 +403,18 @@
                                     </StackPanel>
                                 </RadioButton>
 
+                                <RadioButton x:Name="VoiceNav"
+                                             Style="{StaticResource NavItem}"
+                                             GroupName="ShellNav"
+                                             Checked="Nav_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                                   FontSize="15" Text="&#xE720;"
+                                                   Width="24" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{DynamicResource S.Shell.VoiceTranslate}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+
                                 <RadioButton x:Name="SettingsNav"
                                              Style="{StaticResource NavItem}"
                                              GroupName="ShellNav"

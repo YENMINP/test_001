@@ -1,0 +1,42 @@
+<Window x:Class="OverTranslate.Views.Audio.AudioSubtitleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:ClassModifier="internal"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        Topmost="True"
+        ResizeMode="NoResize"
+        SizeToContent="Height"
+        Width="900">
+    <!--
+        No per-block placement like OverlayWindow/RealtimeBlockWindow — this is a single fixed bar
+        at the bottom of the screen, closer to a video player's subtitle track than to 即時翻譯's
+        per-region overlay. Position (bottom-center, ~8% up from the edge) is set in code-behind
+        against the working-area of whichever screen the session started on; not attempted in XAML
+        because that geometry depends on runtime screen info OverlayWindow already computes
+        elsewhere in the project — reuse that instead of duplicating it here if it exists.
+    -->
+    <Border x:Name="Scrim"
+            CornerRadius="6"
+            Padding="16,10"
+            Opacity="0">
+        <Border.RenderTransform>
+            <TranslateTransform x:Name="FadeInOffset" Y="12"/>
+        </Border.RenderTransform>
+        <StackPanel>
+            <TextBlock x:Name="TranslatedText"
+                       FontSize="26"
+                       FontWeight="SemiBold"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"/>
+            <TextBlock x:Name="OriginalText"
+                       FontSize="15"
+                       Opacity="0.75"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Margin="0,4,0,0"/>
+        </StackPanel>
+    </Border>
+</Window>

@@ -80,6 +80,19 @@
                     </StackPanel>
                 </Button>
 
+                <!-- 語音翻譯 -->
+                <Button x:Name="VoiceBtn"
+                        Style="{StaticResource TrayMenuItem}"
+                        Click="VoiceBtn_Click">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                   FontSize="14" Text="&#xE720;"
+                                   Width="22" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource AppTextSecondary}"/>
+                        <TextBlock Text="{DynamicResource S.Tray.VoiceTranslate}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
                 <!-- 設定 -->
                 <Button x:Name="SettingsBtn"
                         Style="{StaticResource TrayMenuItem}"

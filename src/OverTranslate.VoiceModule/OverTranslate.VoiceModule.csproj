@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    This is the "DLC": 系統音訊語音辨識 (system-audio speech recognition) lives entirely in this
+    assembly so the main app's install stays free of NAudio/Whisper.net for everyone who doesn't
+    use it. The host (OverTranslate.exe) never references this project or its packages — it only
+    knows the IVoiceModule contract (Services/VoiceModule/IVoiceModule.cs in the main project) and
+    loads this DLL at runtime, if present, from a plugins folder next to the exe.
+
+    Ship this via publish-voice-module.ps1, which publishes it (dotnet publish, self-contained=
+    false, same RID as the main app), zips the output, and wraps that into one double-clickable
+    OverTranslate-VoiceModule-Setup.exe — see OverTranslate.VoiceModule.Installer, the small stub
+    project that self-extracts it. A user who would rather do it by hand can still take the zip
+    publish-voice-module.ps1 builds along the way (ModulePublishDir) and drop it into
+    VoiceModuleLoader.PluginDirectory themselves — see VoiceModuleLoader in the main project for
+    the exact expected layout, and its remarks for why that directory is NOT simply "next to
+    OverTranslate.exe".
+  -->
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <!-- Matches the main app's own <Version> by convention — bump both together when the audio
+         feature itself changes, so a downloaded module's version is meaningful to compare against
+         what the host expects. Not enforced in code (yet); see VoiceModuleLoader's remarks. -->
+    <Version>2.4.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Host contract only, resolved at compile time and never copied into this project's own
+         output — at runtime the host process already has its own copy loaded, and the custom
+         AssemblyLoadContext in VoiceModuleLoader is set up to fall back to the host's assemblies
+         for anything this project doesn't ship itself. Getting this wrong (Private not false)
+         would silently duplicate the whole main app inside plugins/voice/. -->
+    <ProjectReference Include="..\OverTranslate\OverTranslate.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="Whisper.net" Version="1.9.1" />
+    <!-- CPU runtime only — always bundled with the module, this is the part that's small enough
+         (tens of MB) to just ship. GPU acceleration is the separate, much larger optional add-on;
+         see cuda/README.md and VoiceModuleLoadContext.LoadUnmanagedDll. -->
+    <PackageReference Include="Whisper.net.Runtime" Version="1.9.1" />
+  </ItemGroup>
+
+</Project>

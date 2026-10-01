@@ -16,6 +16,7 @@ public partial class TrayMenuWindow : Window
     private const double ShadowInset = 18;
 
     public event EventHandler? OpenTranslationRequested;
+    public event EventHandler? OpenVoiceRequested;
     public event EventHandler? OpenSettingsRequested;
     public event EventHandler? ExitRequested;
 
@@ -125,6 +126,12 @@ public partial class TrayMenuWindow : Window
     private void OpenWindowBtn_Click(object sender, RoutedEventArgs e)
     {
         OpenTranslationRequested?.Invoke(this, EventArgs.Empty);
+        Dismiss();
+    }
+
+    private void VoiceBtn_Click(object sender, RoutedEventArgs e)
+    {
+        OpenVoiceRequested?.Invoke(this, EventArgs.Empty);
         Dismiss();
     }
 

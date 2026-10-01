@@ -1,0 +1,266 @@
+<UserControl x:Class="OverTranslate.Views.Voice.VoicePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ctl="clr-namespace:OverTranslate.Controls;assembly=OverTranslate">
+
+    <Grid Margin="28,22,28,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ── Page header ── -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,18">
+            <TextBlock Text="語音翻譯" Style="{StaticResource PageTitle}"/>
+            <TextBlock Text="即時將麥克風或系統聲音辨識並翻譯為目標語言。" Style="{StaticResource PageSubtitle}"/>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Padding="0,0,8,0">
+            <StackPanel MaxWidth="1040">
+
+                <!-- ── 翻譯設定 ── -->
+                <Border Style="{StaticResource CardBorder}">
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource S.Realtime.TranslationSettings}" Style="{StaticResource SectionHeader}"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Margin="0,0,7,0">
+                                <TextBlock Text="{DynamicResource S.Realtime.SourceLanguage}" Style="{StaticResource FieldLabel}" Margin="0,0,0,6"/>
+                                <ComboBox x:Name="SrcLangBox"
+                                          Style="{StaticResource ModernComboBox}"
+                                          SelectedValuePath="Code"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Margin="7,0,7,0">
+                                <TextBlock Text="{DynamicResource S.Realtime.TargetLanguage}" Style="{StaticResource FieldLabel}" Margin="0,0,0,6"/>
+                                <ComboBox x:Name="TgtLangBox"
+                                          Style="{StaticResource ModernComboBox}"
+                                          ctl:ComboBoxSearch.IsEnabled="True"
+                                          SelectedValuePath="Code"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Margin="7,0,0,0">
+                                <TextBlock Text="{DynamicResource S.Realtime.Provider}" Style="{StaticResource FieldLabel}" Margin="0,0,0,6"/>
+                                <ComboBox x:Name="ProviderBox"
+                                          Style="{StaticResource ModernComboBox}"
+                                          SelectedValuePath="Provider"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- ── 步驟 1：選擇音訊來源 ── -->
+                <Border Style="{StaticResource CardBorder}" Padding="16,14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource StepBadge}">
+                                    <TextBlock Text="1" Style="{StaticResource StepBadgeText}"/>
+                                </Border>
+                                <TextBlock Text="步驟 1" Style="{StaticResource StepLabel}"/>
+                            </StackPanel>
+                            <TextBlock Text="音訊來源" Style="{StaticResource StepTitle}"/>
+                            <TextBlock Text="選擇要錄製麥克風收音還是捕捉電腦系統內部的聲音。" Style="{StaticResource StepDescription}"/>
+                        </StackPanel>
+
+                        <Grid Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <RadioButton Grid.Column="0"
+                                         x:Name="MicModeRadio"
+                                         Style="{StaticResource ChoiceTile}"
+                                         Margin="0,0,6,0"
+                                         Checked="AudioModeRadio_Checked"
+                                         IsChecked="True">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Style="{StaticResource ChoiceTileIconBox}">
+                                        <TextBlock Text="&#xE720;" Style="{StaticResource ChoiceTileGlyph}"/>
+                                    </Border>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="麥克風輸入" Style="{StaticResource ChoiceTileTitle}"/>
+                                        <TextBlock Text="使用外接或內建麥克風說話" Style="{StaticResource FieldHint}" Margin="0,3,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </RadioButton>
+
+                            <RadioButton Grid.Column="1"
+                                         x:Name="SystemAudioModeRadio"
+                                         Style="{StaticResource ChoiceTile}"
+                                         Margin="6,0,0,0"
+                                         Checked="AudioModeRadio_Checked">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Style="{StaticResource ChoiceTileIconBox}">
+                                        <TextBlock Text="&#xE767;" Style="{StaticResource ChoiceTileGlyph}"/>
+                                    </Border>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="系統聲音 (Loopback)" Style="{StaticResource ChoiceTileTitle}"/>
+                                        <TextBlock Text="翻譯電腦播放的影片、音樂或語音" Style="{StaticResource FieldHint}" Margin="0,3,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </RadioButton>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- ── 步驟 2：選擇錄音裝置 ── -->
+                <Border Style="{StaticResource CardBorder}" Padding="16,14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource StepBadge}">
+                                    <TextBlock Text="2" Style="{StaticResource StepBadgeText}"/>
+                                </Border>
+                                <TextBlock Text="步驟 2" Style="{StaticResource StepLabel}"/>
+                            </StackPanel>
+                            <TextBlock Text="錄音裝置" Style="{StaticResource StepTitle}"/>
+                            <TextBlock Text="指定要使用的音訊硬體裝置。" Style="{StaticResource StepDescription}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="音訊裝置" Style="{StaticResource FieldLabel}"/>
+                            <TextBlock Text="請選擇您的收音設備" Style="{StaticResource FieldHint}" Margin="0,4,0,8"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox Grid.Column="0"
+                                          x:Name="AudioDeviceBox"
+                                          Style="{StaticResource ModernComboBox}"
+                                          ctl:ComboBoxDropDown.FitsControlWidth="True"
+                                          SelectedValuePath="Id">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <!-- 裝置可能在選單開著時被插拔，所以給一個手動重新整理的入口，
+                                     跟即時翻譯步驟2的重新整理是同一個理由。 -->
+                                <Button Grid.Column="1"
+                                        x:Name="RefreshDevicesBtn"
+                                        Width="36" Height="34"
+                                        Margin="8,0,0,0"
+                                        Background="Transparent"
+                                        BorderThickness="1"
+                                        BorderBrush="{DynamicResource AppBorder}"
+                                        Cursor="Hand"
+                                        Click="RefreshDevicesBtn_Click"
+                                        ToolTip="重新整理裝置清單">
+                                    <TextBlock Text="&#xE72C;"
+                                               FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                               FontSize="14"
+                                               Foreground="{DynamicResource AppTextSecondary}"
+                                               HorizontalAlignment="Center"/>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- ── 步驟 3：字幕外觀 ── -->
+                <Border Style="{StaticResource CardBorder}" Padding="16,14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource StepBadge}">
+                                    <TextBlock Text="3" Style="{StaticResource StepBadgeText}"/>
+                                </Border>
+                                <TextBlock Text="步驟 3" Style="{StaticResource StepLabel}"/>
+                            </StackPanel>
+                            <TextBlock Text="字幕外觀" Style="{StaticResource StepTitle}"/>
+                            <TextBlock Text="調整字幕框大小、透明度，以及是否同時顯示原文。" Style="{StaticResource StepDescription}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="字幕大小" Style="{StaticResource FieldLabel}" Margin="0,0,0,4"/>
+                            <Slider x:Name="SubtitleScaleSlider"
+                                    Minimum="0.7" Maximum="1.6" Value="1.0"
+                                    TickFrequency="0.1" IsSnapToTickEnabled="True"
+                                    ValueChanged="SubtitleScaleSlider_ValueChanged"/>
+
+                            <TextBlock Text="背景透明度" Style="{StaticResource FieldLabel}" Margin="0,12,0,4"/>
+                            <Slider x:Name="SubtitleOpacitySlider"
+                                    Minimum="0" Maximum="100" Value="60"
+                                    TickFrequency="10" IsSnapToTickEnabled="True"
+                                    ValueChanged="SubtitleOpacitySlider_ValueChanged"/>
+
+                            <CheckBox x:Name="ShowOriginalCheck"
+                                      Content="同時顯示原文字幕"
+                                      Margin="0,14,0,0"
+                                      Checked="ShowOriginalCheck_Changed"
+                                      Unchecked="ShowOriginalCheck_Changed"/>
+
+                            <TextBlock Text="辨識模型" Style="{StaticResource FieldLabel}" Margin="0,14,0,4"/>
+                            <ComboBox x:Name="ModelSizeBox"
+                                      DisplayMemberPath="Label"
+                                      SelectedValuePath="Value"
+                                      SelectionChanged="ModelSizeBox_SelectionChanged"/>
+                            <TextBlock Text="模型越小反應越快，但辨識準確度會下降；隨時可切換，下一句就會用新的模型。"
+                                       Style="{StaticResource FieldHint}"
+                                       TextWrapping="Wrap" LineHeight="16" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- ── 運作方式 ── -->
+                <Border Style="{StaticResource CardBorder}">
+                    <StackPanel>
+                        <TextBlock Text="運作方式" Style="{StaticResource SectionHeader}"/>
+                        <TextBlock Style="{StaticResource FieldHint}" TextWrapping="Wrap" LineHeight="16" Margin="0,0,0,6"
+                                   Text="1. 點擊下方的「開始翻譯」按鈕啟動語音監聽。"/>
+                        <TextBlock Style="{StaticResource FieldHint}" TextWrapping="Wrap" LineHeight="16" Margin="0,0,0,6"
+                                   Text="2. 透過麥克風說話或播放聲音，系統會自動辨識語音內容。"/>
+                        <TextBlock Style="{StaticResource FieldHint}" TextWrapping="Wrap" LineHeight="16"
+                                   Text="3. 辨識完成後的文字將即時翻譯並顯示於畫面上。"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ── Footer ── -->
+        <DockPanel Grid.Row="2" Margin="0,14,0,0" VerticalAlignment="Center">
+            <Button x:Name="PrimaryBtn"
+                    Content="開始翻譯"
+                    Style="{StaticResource AccentButton}"
+                    Height="36" MinWidth="140" Padding="16,0"
+                    DockPanel.Dock="Left"
+                    Margin="0,0,14,0"
+                    Click="PrimaryBtn_Click"/>
+            <TextBlock x:Name="StatusText"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap"
+                       FontFamily="{DynamicResource AppFont}"
+                       FontSize="12"
+                       Foreground="{DynamicResource AppTextSecondary}"/>
+        </DockPanel>
+    </Grid>
+</UserControl>

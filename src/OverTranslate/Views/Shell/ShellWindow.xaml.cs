@@ -9,6 +9,8 @@ using OverTranslate.Services;
 using OverTranslate.Views.Realtime;
 using OverTranslate.Views.Settings;
 using OverTranslate.Views.Translation;
+using OverTranslate.Services.VoiceModule;
+using OverTranslate.Views.Voice;
 // UseWindowsForms puts System.Windows.Forms in the implicit usings, so these names collide
 using Point = System.Windows.Point;
 using Size = System.Windows.Size;
@@ -19,7 +21,8 @@ public enum ShellPage
 {
     Translation,
     Realtime,
-    Settings
+    Settings,
+    Voice
 }
 
 /// <summary>
@@ -89,6 +92,11 @@ public partial class ShellWindow : Window
     private readonly TranslationPage _translationPage = new();
     private readonly RealtimePage    _realtimePage    = new();
     private readonly SettingsPage    _settingsPage    = new();
+    // Voice's content depends on whether the optional module is installed, and that can change
+    // mid-session (the user just imported it from VoiceModuleMissingView) — so unlike the other
+    // pages this is not a plain readonly field. See GetVoiceContent.
+    private UIElement? _voiceContent;
+    private VoiceModuleMissingView? _voiceMissingView;
 
     private ShellPage? _current;
 
@@ -548,6 +556,7 @@ public partial class ShellWindow : Window
         var page =
             ReferenceEquals(sender, SettingsNav) ? ShellPage.Settings :
             ReferenceEquals(sender, RealtimeNav) ? ShellPage.Realtime :
+            ReferenceEquals(sender, VoiceNav)    ? ShellPage.Voice :
             ShellPage.Translation;
         if (_current == page) return;
         ShowPage(page);
@@ -568,6 +577,7 @@ public partial class ShellWindow : Window
         {
             ShellPage.Settings => _settingsPage,
             ShellPage.Realtime => _realtimePage,
+            ShellPage.Voice    => GetVoiceContent(),
             _                  => (UIElement)_translationPage
         };
 
@@ -575,10 +585,37 @@ public partial class ShellWindow : Window
         AnimateContentIn();
     }
 
+    private UIElement GetVoiceContent()
+    {
+        if (_voiceContent is not null) return _voiceContent;
+
+        if (VoiceModuleLoader.TryGetModule() is { } module)
+            return _voiceContent = module.CreatePage();
+
+        _voiceMissingView ??= new VoiceModuleMissingView();
+        // Unsubscribe first: this runs on every visit while the module is missing, and without it
+        // the handler would stack up once per visit.
+        _voiceMissingView.Installed -= OnVoiceModuleInstalled;
+        _voiceMissingView.Installed += OnVoiceModuleInstalled;
+        return _voiceMissingView;
+    }
+
+    private void OnVoiceModuleInstalled(object? sender, EventArgs e)
+    {
+        if (_voiceMissingView is not null)
+            _voiceMissingView.Installed -= OnVoiceModuleInstalled;
+
+        VoiceModuleLoader.Reset();
+        _voiceContent = null;
+        if (_current == ShellPage.Voice)
+            ContentHost.Child = GetVoiceContent();
+    }
+
     private System.Windows.Controls.RadioButton NavItemFor(ShellPage page) => page switch
     {
         ShellPage.Settings => SettingsNav,
         ShellPage.Realtime => RealtimeNav,
+        ShellPage.Voice    => VoiceNav,
         _                  => TranslationNav
     };
 

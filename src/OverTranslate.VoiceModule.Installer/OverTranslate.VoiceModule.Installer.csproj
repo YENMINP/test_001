@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    This is the "stub" half of the voice module's .exe installer. It ships with NO copy of the
+    module baked in at compile time — publish-voice-module.ps1 builds this once, then appends a
+    plain zip of OverTranslate.VoiceModule's own publish output, followed by 8 bytes recording that
+    zip's exact length, onto the end of this stub's own published exe. What ends up in
+    artifacts\releases as OverTranslate-VoiceModule-Setup.exe is genuinely one file: this stub's
+    code, followed by the module's files as an appended zip, followed by that 8-byte length.
+
+    Program.cs reads those trailing 8 bytes at run time to work out exactly where the appended zip
+    starts and copies just that range out before handing it to ZipArchive — see Install()'s remarks
+    for why it does that instead of just opening its own exe file as a ZipArchive directly (the
+    classic self-extracting-archive trick, which works for many zip readers but turned out not to
+    be reliable for .NET's). Rebuilding the module never requires rebuilding this project; only
+    publish-voice-module.ps1 needs to run again.
+
+    Self-contained + single-file so the result is one double-clickable .exe with no dependency on a
+    .NET runtime being present — the same reasoning OverTranslate.csproj itself documents, and for
+    the same audience: someone who has never installed .NET.
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AssemblyName>OverTranslate.VoiceModule.Installer</AssemblyName>
+    <RootNamespace>OverTranslate.VoiceModule.Installer</RootNamespace>
+    <ApplicationIcon>..\OverTranslate\icons\app.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
+    <!-- Not built alongside the main solution's Debug/Release — see publish-voice-module.ps1, which
+         drives it directly and always self-contained/single-file. No SupportedOSPlatformVersion
+         pin: this reads its own exe's bytes and shows a message box, nothing version-gated. -->
+    <NoWarn>$(NoWarn);WFAC010</NoWarn>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,89 @@
+<UserControl x:Class="OverTranslate.Views.Voice.VoiceModuleMissingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Background="{DynamicResource AppSurfaceBg}">
+        <StackPanel VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    MaxWidth="420">
+
+            <TextBlock FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                       FontSize="40"
+                       Text="&#xE720;"
+                       Foreground="{DynamicResource AppTextSecondary}"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,16"/>
+
+            <TextBlock Text="{DynamicResource S.VoiceModule.Title}"
+                       FontFamily="{DynamicResource AppFont}"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource AppTextPrimary}"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,8"/>
+
+            <TextBlock Text="{DynamicResource S.VoiceModule.Description}"
+                       FontFamily="{DynamicResource AppFont}"
+                       FontSize="13"
+                       Foreground="{DynamicResource AppTextSecondary}"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Margin="0,0,0,20"/>
+
+            <!-- Base module -->
+            <Button x:Name="InstallModuleButton"
+                    Content="{DynamicResource S.VoiceModule.Install}"
+                    Style="{StaticResource AccentButton}"
+                    Click="InstallModuleButton_Click"
+                    HorizontalAlignment="Stretch"
+                    Margin="0,0,0,8"/>
+
+            <ProgressBar x:Name="ModuleProgressBar"
+                         Height="4"
+                         IsIndeterminate="True"
+                         Visibility="Collapsed"
+                         Margin="0,0,0,20"/>
+
+            <!-- Optional GPU add-on: only meaningful once the base module is in, so this row is
+                 shown/enabled by the code-behind rather than removed from the tree, to keep the
+                 layout stable while a download is in progress. -->
+            <Border BorderBrush="{DynamicResource AppSeparator}"
+                    BorderThickness="0,1,0,0"
+                    Padding="0,16,0,0">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource S.VoiceModule.CudaTitle}"
+                               FontFamily="{DynamicResource AppFont}"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource AppTextPrimary}"
+                               Margin="0,0,0,4"/>
+                    <TextBlock Text="{DynamicResource S.VoiceModule.CudaDescription}"
+                               FontFamily="{DynamicResource AppFont}"
+                               FontSize="12"
+                               Foreground="{DynamicResource AppTextSecondary}"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,12"/>
+                    <Button x:Name="InstallCudaButton"
+                            Content="{DynamicResource S.VoiceModule.InstallCuda}"
+                            Style="{StaticResource FlatButton}"
+                            Click="InstallCudaButton_Click"
+                            HorizontalAlignment="Stretch"/>
+                    <ProgressBar x:Name="CudaProgressBar"
+                                 Height="4"
+                                 IsIndeterminate="True"
+                                 Visibility="Collapsed"
+                                 Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <TextBlock x:Name="StatusText"
+                       FontFamily="{DynamicResource AppFont}"
+                       FontSize="12"
+                       Foreground="{DynamicResource AppTextSecondary}"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Margin="0,16,0,0"
+                       Visibility="Collapsed"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
